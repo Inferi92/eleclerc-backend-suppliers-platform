@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-04-16T21:50:35.338Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 OPR/85.0.4341.60" etag="fN87THG7y2ANoJdt9PVP" version="17.4.2" type="github">
+<mxfile host="app.diagrams.net" modified="2022-04-16T22:18:36.488Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 OPR/85.0.4341.60" etag="IqO4eAEnz3mjT7tv7Bet" version="17.4.2" type="github">
   <diagram id="adEuzm5Q6Etf0myzw-gI" name="Page-1">
     <mxGraphModel dx="1162" dy="671" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -8,7 +8,7 @@
           <mxGeometry x="136" y="40" width="570" height="640" as="geometry" />
         </mxCell>
         <mxCell id="cF03SU3YNo2-Q6TxDWYe-3" value="Plataforma de fornecedores do E.Leclerc" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" parent="1" vertex="1">
-          <mxGeometry x="316" y="50" width="170" height="30" as="geometry" />
+          <mxGeometry x="336" y="50" width="170" height="30" as="geometry" />
         </mxCell>
         <mxCell id="cF03SU3YNo2-Q6TxDWYe-6" value="Backend" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="756" y="200" width="30" height="60" as="geometry" />
