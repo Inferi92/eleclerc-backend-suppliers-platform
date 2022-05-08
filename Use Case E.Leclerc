@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-05-08T21:36:01.987Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 OPR/85.0.4341.75" etag="wMj8B9_oGUDnnJ2aN120" version="18.0.2" type="github">
+<mxfile host="app.diagrams.net" modified="2022-05-08T23:01:58.275Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36 OPR/85.0.4341.75" etag="Bu58YpWiVIXLeHD01yXr" version="18.0.2" type="github">
   <diagram id="adEuzm5Q6Etf0myzw-gI" name="Page-1">
     <mxGraphModel dx="2209" dy="764" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -40,7 +40,7 @@
         <mxCell id="cF03SU3YNo2-Q6TxDWYe-13" value="Editar informações de fornecedor&amp;nbsp;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
           <mxGeometry x="150" y="320" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="cF03SU3YNo2-Q6TxDWYe-14" value="Criar conta de fornecedor" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="cF03SU3YNo2-Q6TxDWYe-14" value="Criar conta de fornecedor" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
           <mxGeometry x="166" y="400" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="cF03SU3YNo2-Q6TxDWYe-16" value="Ativar conta de fornecedor&lt;span style=&quot;color: rgba(0 , 0 , 0 , 0) ; font-family: monospace ; font-size: 0px&quot;&gt;%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22Alterar%20informa%C3%A7%C3%B5es%20de%20fornecedor%22%20style%3D%22ellipse%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22180%22%20y%3D%22430%22%20width%3D%22120%22%20height%3D%2250%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -254,6 +254,24 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="96" y="466.51079136690646" as="sourcePoint" />
             <mxPoint x="194.7759828632661" y="377.683468648142" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jDRuoiQuckMZ0SIulZd--11" value="Listar Fornecedores" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="-130" y="475" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jDRuoiQuckMZ0SIulZd--12" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="jDRuoiQuckMZ0SIulZd--11" target="cF03SU3YNo2-Q6TxDWYe-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-35.94651383651171" y="286.42187070303453" as="sourcePoint" />
+            <mxPoint x="66" y="254.65838509316768" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jDRuoiQuckMZ0SIulZd--13" value="Ver Fornecedor" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="-150" y="560" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jDRuoiQuckMZ0SIulZd--14" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="jDRuoiQuckMZ0SIulZd--13" target="cF03SU3YNo2-Q6TxDWYe-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-6.850107883185956" y="495.71986010658793" as="sourcePoint" />
+            <mxPoint x="66" y="482.6595744680851" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
