@@ -130,7 +130,7 @@ class Produto(models.Model):
             MaxValueValidator(199),
         ],
     )
-    cor = models.ForeignKey(Cor, null=True, blank=False)
+    cor = models.ForeignKey(Cor, on_delete=models.CASCADE, null=True, blank=False)
     peso_bruto = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, blank=False
     )
@@ -158,9 +158,9 @@ class Produto(models.Model):
         ("prc", "porções"),
         ("saq", "saquetas"),
     ]
-    capacidade_un = models.CharField(choices=un_capacidade, null=False, blank=False)
+    capacidade_un = models.CharField(max_length=5,choices=un_capacidade, null=False, blank=False)
     un_venda = [
         ("un", "unidade"),
         ("kg", "kilograma"),
     ]
-    unidade_venda = models.CharField(choices=un_venda, null=False, blank=False)
+    unidade_venda = models.CharField(max_length=3, choices=un_venda, null=False, blank=False)

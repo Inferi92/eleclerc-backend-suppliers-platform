@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'leclerc_suppliers_platform.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "htsolutions",
+        "NAME": "leclerc_suppliers_platform",
         "USER": "postgres",
         "PASSWORD": "Toe18Perir",
-        "HOST": "localhost",
+        "HOST": "127.0.0.1",
         "PORT": "5432",
     }
 }
