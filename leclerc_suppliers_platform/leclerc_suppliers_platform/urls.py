@@ -15,7 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+# Use include() to add paths from the catalog application
+from django.conf.urls import include
+#Add URL maps to redirect the base URL to our application
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('eleclercapi/', include('platform_api.urls')),
+    path('', RedirectView.as_view(url='/eleclercapi/')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
