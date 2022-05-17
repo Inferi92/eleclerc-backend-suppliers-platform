@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$u=o#m_ge*3ie6l1si%)poy)ev)i0xojne4*d2uvh@p7(_yjyo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "platform_api",
+    "drf_yasg",
     "colorfield",
 ]
 
@@ -82,7 +83,7 @@ DATABASES = {
         "NAME": "leclerc_suppliers_platform",
         "USER": "postgres",
         "PASSWORD": "Toe18Perir",
-        "HOST": "127.0.0.1",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }
@@ -105,6 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+SWAGGER_SETTINGS = {
+    "DEFAULT_MODEL_RENDERING": "example",
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
@@ -117,6 +121,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+LOGIN_REDIRECT_URL = "/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
