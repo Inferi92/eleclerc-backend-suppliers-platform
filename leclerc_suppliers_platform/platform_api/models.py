@@ -58,7 +58,7 @@ class Marca(models.Model):
 
 
 # TABELA DAS CORES
-class Cor(models.Model):
+class Cores(models.Model):
     COLOR_PALLET = [
         (
             "#FFFFFF",
@@ -93,10 +93,10 @@ class Cor(models.Model):
             "Rosa",
         ),
     ]
-    cor = ColorField(choices=COLOR_PALLET)
+    nome = ColorField(choices=COLOR_PALLET)
 
     def __str__(self):
-        return self.cor
+        return self.nome
 
 
 # TABELA DOS PRODUTOS
@@ -130,7 +130,7 @@ class Produto(models.Model):
             MaxValueValidator(199),
         ],
     )
-    cor = models.ForeignKey(Cor, on_delete=models.CASCADE, null=True, blank=False)
+    cor = models.ForeignKey(Cores, on_delete=models.CASCADE, null=True, blank=False)
     peso_bruto = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, blank=False
     )
