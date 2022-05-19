@@ -1,4 +1,5 @@
 from configparser import MAX_INTERPOLATION_DEPTH
+from enum import unique
 from random import choices
 from colorfield.fields import ColorField
 from django.db import models
@@ -13,30 +14,25 @@ from django.core.validators import (
 # Create your models here.
 
 # TABELA DOS FORNECEDORES
-class Fornecedor(models.Model):
-    nome = models.CharField(max_length=100, null=False, blank=False)
-    endereco = models.CharField(max_length=100, null=False, blank=False)
-    codigo_postal = models.CharField(max_length=8, null=False, blank=False)
-    cidade = models.CharField(max_length=50, null=False, blank=False)
+class Supplier(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False)
+    address = models.CharField(max_length=100, null=False, blank=False)
+    postal_code = models.CharField(max_length=8, null=False, blank=False)
+    city = models.CharField(max_length=50, null=False, blank=False)
     nif = models.IntegerField(
+        primary_key=True,
         null=False,
         blank=False,
         unique=True,
-        validators=[
-            RegexValidator(r"[1-9]\d*"),
-            MinLengthValidator(9),
-            MaxLengthValidator(9),
-            MaxValueValidator(999999999),
-            MinValueValidator(1),
-        ],
+        validators=[MaxValueValidator(9999999999), MinValueValidator(1)],
     )
     email = models.EmailField(max_length=50, null=False, blank=False)
-    data_registo = models.DateTimeField(auto_now_add=True)
-    data_ultimo_login = models.DateTimeField(auto_now=True)
-    ativo = models.BooleanField(default=True, null=False, blank=False)
+    register_date = models.DateTimeField(auto_now_add=True)
+    last_login_date = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True, null=False, blank=False)
 
     def __str__(self):
-        return self.nome
+        return self.name
 
     # def save(self, *args, **kwargs):
     # # On save, update timestamps
@@ -47,18 +43,18 @@ class Fornecedor(models.Model):
 
 
 # TABELA DAS MARCAS
-class Marca(models.Model):
-    nome = models.CharField(max_length=55, null=False, blank=False)
-    fornecedor = models.ForeignKey(
-        Fornecedor, on_delete=models.CASCADE, null=False, blank=False
+class Brand(models.Model):
+    name = models.CharField(max_length=55, null=False, blank=False)
+    supplier = models.ForeignKey(
+        Supplier, on_delete=models.CASCADE, null=False, blank=False,
     )
 
     def __str__(self):
-        return self.nome
+        return self.name
 
 
 # TABELA DAS CORES
-class Cores(models.Model):
+class Color(models.Model):
     COLOR_PALLET = [
         (
             "#FFFFFF",
@@ -93,59 +89,55 @@ class Cores(models.Model):
             "Rosa",
         ),
     ]
-    nome = ColorField(choices=COLOR_PALLET)
+    name = ColorField(choices=COLOR_PALLET, unique=True)
 
     def __str__(self):
-        return self.nome
+        return self.name
 
 
 # TABELA DOS PRODUTOS
-class Produto(models.Model):
-    fornecedor = models.ForeignKey(
-        Fornecedor, on_delete=models.CASCADE, null=False, blank=False
+class Product(models.Model):
+    supplier = models.ForeignKey(
+        Supplier, on_delete=models.CASCADE, null=False, blank=False
     )
     ean = models.IntegerField(
         null=False,
         blank=False,
         unique=True,
+        default=1,
         validators=[
-            RegexValidator(r"[1-9]\d*"),
-            MinLengthValidator(13),
-            MaxLengthValidator(13),
             MaxValueValidator(9999999999999),
             MinValueValidator(1),
         ],
     )
-    nome = models.CharField(max_length=100, null=False, blank=False)
-    marca = models.ForeignKey(Marca, on_delete=models.CASCADE, null=False, blank=False)
+    name = models.CharField(max_length=100, null=False, blank=False)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=False, blank=False)
     descricao = models.TextField(max_length=200, null=True, blank=True)
-    idade_recomendada = models.IntegerField(
+    recommended_age = models.IntegerField(
         null=True,
         blank=False,
+        default=0,
         validators=[
-            RegexValidator(r"[1-9]\d*"),
-            MinLengthValidator(1),
-            MaxLengthValidator(3),
-            MinValueValidator(1),
+            MinValueValidator(0),
             MaxValueValidator(199),
         ],
     )
-    cor = models.ForeignKey(Cores, on_delete=models.CASCADE, null=True, blank=False)
-    peso_bruto = models.DecimalField(
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True)
+    gross_weight = models.DecimalField(
+        max_digits=6, decimal_places=2, null=False, blank=True
+    )
+    material_type = models.CharField(max_length=50, null=True, blank=True)
+    article_dimension = models.CharField(max_length=12, null=True, blank=True)
+    box_dimension = models.CharField(max_length=12, null=True, blank=True)
+    care_of_use = models.CharField(max_length=50, null=True, blank=True)
+    box_content = models.CharField(max_length=50, null=True, blank=True)
+    nutriscore = models.CharField(max_length=1, null=True, blank=True)
+    ingredients = models.TextField(max_length=300, null=True, blank=True)
+    nutritional_table = models.TextField(max_length=300, null=True, blank=True)
+    capacity = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, blank=False
     )
-    tipo_material = models.CharField(max_length=50, null=True, blank=False)
-    dimensoes_artigo = models.CharField(max_length=12, null=True, blank=False)
-    dimensoes_caixa = models.CharField(max_length=12, null=True, blank=False)
-    cuidados_uso = models.CharField(max_length=50, null=True, blank=False)
-    conteudo_caixa = models.CharField(max_length=50, null=True, blank=False)
-    nutriscore = models.CharField(max_length=1, null=True, blank=False)
-    ingredientes = models.TextField(max_length=300, null=True, blank=True)
-    tabela_nutricional = models.TextField(max_length=300, null=True, blank=True)
-    capacidade = models.DecimalField(
-        max_digits=6, decimal_places=2, null=False, blank=False
-    )
-    un_capacidade = [
+    capacity_un = [
         ("gr", "gramas"),
         ("kg", "kilogramas"),
         ("un", "unidades"),
@@ -158,9 +150,16 @@ class Produto(models.Model):
         ("prc", "porções"),
         ("saq", "saquetas"),
     ]
-    capacidade_un = models.CharField(max_length=5,choices=un_capacidade, null=False, blank=False)
-    un_venda = [
+    capacity_unit = models.CharField(
+        max_length=5, choices=capacity_un, null=False, blank=False
+    )
+    seles_un = [
         ("un", "unidade"),
         ("kg", "kilograma"),
     ]
-    unidade_venda = models.CharField(max_length=3, choices=un_venda, null=False, blank=False)
+    seles_unit = models.CharField(
+        max_length=3, choices=seles_un, null=False, blank=False
+    )
+
+    def __str__(self):
+        return self.name

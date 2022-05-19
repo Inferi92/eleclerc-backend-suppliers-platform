@@ -18,10 +18,14 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     # URLS API ENDPOINTS
-    path("api/fornecedor/<int:pk>", views.FornecedorDetailAPI.as_view(), name="single_supplier_api"),
-    path("api/fornecedor/", views.FornecedorPOST.as_view(), name="add_single_supplier_api"),
-    path("api/marca/<int:pk>", views.MarcaDetailAPI.as_view(), name="single_brand_api"),
-    path("api/marca/", views.MarcaPOST.as_view(), name="add_single_brand_api"),
+    path("api/fornecedor/<int:nif>", views.SingleSupplier.as_view(), name="single_supplier_api"),
+    path("api/fornecedor/", views.AllSuppliers.as_view(), name="suppliers_api"),
+    path("api/marca/<int:pk>", views.SingleBrand.as_view(), name="single_brand_api"),
+    path("api/marca/", views.AllBrands.as_view(), name="brands_api"),
+    path("api/produto/<int:pk>", views.SingleProduct.as_view(), name="single_product_api"),
+    path("api/produto/", views.AllProducts.as_view(), name="products_api"),
+    path("api/cor/<int:pk>", views.SingleColor.as_view(), name="single_color_api"),
+    path("api/cor/", views.AllColors.as_view(), name="colors_api"),
 
     path("api/docs", schema_view.with_ui("swagger", cache_timeout=0)),
 ]

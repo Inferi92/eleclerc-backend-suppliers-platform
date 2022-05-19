@@ -1,28 +1,29 @@
 from dataclasses import field
 from pyexpat import model
-from .models import Fornecedor, Marca, Cores, Produto
+from weakref import ReferenceType
+from .models import Supplier, Brand, Color, Product
 from rest_framework import serializers
 
 
-class FornecedorSerializer(serializers.ModelSerializer):
+class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Fornecedor
+        model = Supplier
         fields = "__all__"
 
 
-class MarcaSerializer(serializers.ModelSerializer):
+class BrandSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Marca
+        model = Brand
         fields = "__all__"
 
 
-class CoresSerializer(serializers.ModelSerializer):
+class ColorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cores
+        model = Color
         fields = "__all__"
 
 
-class ProdutoSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Produto
+        model = Product
         fields = "__all__"
