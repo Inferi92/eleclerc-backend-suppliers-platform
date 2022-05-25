@@ -92,6 +92,7 @@ class SingleSupplier(APIView):
     @swagger_auto_schema(
         operation_summary="Atualizar um fornecedor pelo seu NIF",
         operation_description="Atualizar um fornecedor específico",
+        request_body=SupplierSerializer,
         responses={
             status.HTTP_200_OK: response_200(SupplierSerializer),
             status.HTTP_400_BAD_REQUEST: response_400(SupplierSerializer),
@@ -174,7 +175,8 @@ class SingleBrand(APIView):
 
     @swagger_auto_schema(
         operation_summary="Atualizar um marca pelo seu ID",
-        operation_description="Atualizar um marca específico",
+        operation_description="Atualizar um marca específica",
+        request_body=BrandSerializer,
         responses={
             status.HTTP_200_OK: response_200(BrandSerializer),
             status.HTTP_400_BAD_REQUEST: response_400(BrandSerializer),
@@ -258,6 +260,7 @@ class SingleProduct(APIView):
     @swagger_auto_schema(
         operation_summary="Atualizar um produto pelo seu ID",
         operation_description="Atualizar um produto específico",
+        request_body=ProductSerializer,
         responses={
             status.HTTP_200_OK: response_200(ProductSerializer),
             status.HTTP_400_BAD_REQUEST: response_400(ProductSerializer),
@@ -341,6 +344,7 @@ class SingleColor(APIView):
     @swagger_auto_schema(
         operation_summary="Atualizar uma cor pelo seu ID",
         operation_description="Atualizar uma cor específica",
+        request_body=ColorSerializer,
         responses={
             status.HTTP_200_OK: response_200(ColorSerializer),
             status.HTTP_400_BAD_REQUEST: response_400(ColorSerializer),
