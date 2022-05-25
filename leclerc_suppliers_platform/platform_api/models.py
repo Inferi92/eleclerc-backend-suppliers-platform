@@ -1,5 +1,6 @@
 from configparser import MAX_INTERPOLATION_DEPTH
 from enum import unique
+from multiprocessing.sharedctypes import Value
 from random import choices
 from colorfield.fields import ColorField
 from django.db import models
@@ -27,6 +28,7 @@ class Supplier(models.Model):
         validators=[MaxValueValidator(9999999999), MinValueValidator(1)],
     )
     email = models.EmailField(max_length=50, null=False, blank=False)
+    password = models.CharField(('password'), max_length=128, null=True)
     register_date = models.DateTimeField(auto_now_add=True)
     last_login_date = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True, null=False, blank=False)
