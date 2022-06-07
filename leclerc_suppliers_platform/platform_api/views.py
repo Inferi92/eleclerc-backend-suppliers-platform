@@ -154,27 +154,27 @@ class AllBrands(APIView):
 
 # Brand by ID
 class SingleBrand(APIView):
-    def get_object(self, pk):
+    def get_object(self, name):
         try:
-            return Brand.objects.get(pk=pk)
+            return Brand.objects.get(name=name)
         except Brand.DoesNotExist:
             raise Http404
 
     @swagger_auto_schema(
-        operation_summary="Obter marca pelo seu ID",
+        operation_summary="Obter marca pelo seu Nome",
         operation_description="Obter uma marca específica",
         responses={
             status.HTTP_200_OK: response_200(BrandSerializer),
             status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
         },
     )
-    def get(self, request, pk, format=None):
-        brand = self.get_object(pk)
+    def get(self, request, name, format=None):
+        brand = self.get_object(name)
         serializer = BrandSerializer(brand)
         return JsonResponse(serializer.data, safe=False)
 
     @swagger_auto_schema(
-        operation_summary="Atualizar um marca pelo seu ID",
+        operation_summary="Atualizar um marca pelo seu Nome",
         operation_description="Atualizar um marca específica",
         request_body=BrandSerializer,
         responses={
@@ -183,8 +183,8 @@ class SingleBrand(APIView):
             status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
         },
     )
-    def put(self, request, nif, format=None):
-        brand = self.get_object(nif)
+    def put(self, request, name, format=None):
+        brand = self.get_object(name)
         serializer = BrandSerializer(brand, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -192,7 +192,7 @@ class SingleBrand(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-        operation_summary="Apagar um marca pelo seu ID",
+        operation_summary="Apagar um marca pelo seu Nome",
         operation_description="Apagar um marca específico",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(BrandSerializer),
@@ -205,6 +205,28 @@ class SingleBrand(APIView):
         return Response(
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+# Brand by Supplier
+class BrandBySupplier(APIView):
+    def get_object(self, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter marcas por fornecedor",
+        operation_description="Obter marcas de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(BrandSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Brand.objects.filter(supplier=nif)
+        serializer = BrandSerializer(products, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 # All Products
@@ -291,6 +313,28 @@ class SingleProduct(APIView):
         )
 
 
+# Product by Supplier
+class ProductBySupplier(APIView):
+    def get_object(self, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter produtos por fornecedor",
+        operation_description="Obter produtos de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(ProductSerializer),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif)
+        serializer = ProductSerializer(products, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
 # All Colors
 class AllColors(APIView):
     @swagger_auto_schema(
@@ -322,27 +366,27 @@ class AllColors(APIView):
 
 # Color by ID
 class SingleColor(APIView):
-    def get_object(self, pk):
+    def get_object(self, name):
         try:
-            return Color.objects.get(pk=pk)
+            return Color.objects.get(name=name)
         except Color.DoesNotExist:
             raise Http404
 
     @swagger_auto_schema(
-        operation_summary="Obter uma cor pelo seu ID",
+        operation_summary="Obter uma cor pelo seu Nome",
         operation_description="Obter uma cor específica",
         responses={
             status.HTTP_200_OK: response_200(ColorSerializer),
             status.HTTP_404_NOT_FOUND: response_404(ColorSerializer),
         },
     )
-    def get(self, request, pk, format=None):
-        color = self.get_object(pk)
+    def get(self, request, name, format=None):
+        color = self.get_object(name)
         serializer = ColorSerializer(color)
         return JsonResponse(serializer.data, safe=False)
 
     @swagger_auto_schema(
-        operation_summary="Atualizar uma cor pelo seu ID",
+        operation_summary="Atualizar uma cor pelo seu Nome",
         operation_description="Atualizar uma cor específica",
         request_body=ColorSerializer,
         responses={
@@ -351,8 +395,8 @@ class SingleColor(APIView):
             status.HTTP_404_NOT_FOUND: response_404(ColorSerializer),
         },
     )
-    def put(self, request, pk, format=None):
-        color = self.get_object(pk)
+    def put(self, request, name, format=None):
+        color = self.get_object(name)
         serializer = ColorSerializer(color, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -360,15 +404,15 @@ class SingleColor(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-        operation_summary="Apagar uma cor pelo seu ID",
+        operation_summary="Apagar uma cor pelo seu Nome",
         operation_description="Apagar uma cor específica",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(ColorSerializer),
             status.HTTP_404_NOT_FOUND: response_404(ColorSerializer),
         },
     )
-    def delete(self, request, pk, format=None):
-        color = self.get_object(pk)
+    def delete(self, request, name, format=None):
+        color = self.get_object(name)
         color.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,

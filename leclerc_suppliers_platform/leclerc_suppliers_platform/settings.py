@@ -83,7 +83,7 @@ DATABASES = {
         "NAME": "leclerc_suppliers_platform",
         "USER": "postgres",
         "PASSWORD": "Toe18Perir",
-        "HOST": "localhost",
+        "HOST": "db", #CHANGE FOR DB BEFORE RUN DOCKER COMMANDS
         "PORT": "5432",
     }
 }

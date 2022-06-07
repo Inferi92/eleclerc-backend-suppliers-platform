@@ -1,0 +1,19 @@
+version: "3.4"
+services: 
+  db: 
+    image: postgres:latest
+    restart: on-failure
+    ports:
+      - 5431:5432
+    environment:
+      - POSTGRES_PASSWORD=Toe18Perir
+      - POSTGRES_DB=leclerc_suppliers_platform
+  api:
+    container_name: eleclerc-suppliers-platform
+    build:
+      context: .
+    depends_on:
+      - db
+    restart: unless-stopped
+    ports:
+      - 8000:8008
