@@ -17,28 +17,20 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     # URLS API ENDPOINTS
-    path(
-        "api/fornecedor/<int:nif>",
-        views.SingleSupplier.as_view(),
-        name="single_supplier_api",
-    ),
+    path("api/fornecedor/<int:nif>", views.SingleSupplier.as_view(), name="single_supplier_api"),
     path("api/fornecedor/", views.AllSuppliers.as_view(), name="suppliers_api"),
     path("api/marca/<str:name>", views.SingleBrand.as_view(), name="single_brand_api"),
     path("api/marca/", views.AllBrands.as_view(), name="brands_api"),
-    path(
-        "api/marca/fornecedor/<int:nif>",
-        views.BrandBySupplier.as_view(),
-        name="brands_by_supplier_api",
-    ),
-    path(
-        "api/produto/<int:pk>", views.SingleProduct.as_view(), name="single_product_api"
-    ),
+    path("api/marca/fornecedor/<int:nif>", views.BrandBySupplier.as_view(), name="brands_by_supplier_api"),
+    path("api/produto/<int:pk>", views.SingleProduct.as_view(), name="single_product_api"),
     path("api/produto/", views.AllProducts.as_view(), name="products_api"),
-    path(
-        "api/produto/fornecedor/<int:nif>",
-        views.ProductBySupplier.as_view(),
-        name="products_by_supplier_api",
-    ),
+    path("api/produto/fornecedor/<int:nif>", views.ProductBySupplier.as_view(), name="products_by_supplier_api"),
+    path("api/estatisticas/topvinte/fornecedor/<int:nif>", views.TopTwentyProducts.as_view(), name="top_twenty_products_by_supplier_api"),
+    path("api/estatisticas/descontinuados/fornecedor/<int:nif>", views.DiscontinuedProducts.as_view(), name="discontinued_products_by_supplier_api"),
+    path("api/estatisticas/ndescontinuados/fornecedor/<int:nif>", views.NumberOfDiscontinuedProducts.as_view(), name="number_of_discontinued_products_by_supplier_api"),
+    path("api/estatisticas/bloqueados/fornecedor/<int:nif>", views.BlockedProducts.as_view(), name="discontinued_products_by_supplier_api"),
+    path("api/estatisticas/nbloqueados/fornecedor/<int:nif>", views.NumberOfBlockedProducts.as_view(), name="number_of_blocked_products_by_supplier_api"),
+    path("api/estatisticas/nmarcas/fornecedor/<int:nif>", views.NumberOfBrandsBySupplier.as_view(), name="number_of_brands_by_supplier_api"),
     path("api/cor/<str:name>", views.SingleColor.as_view(), name="single_color_api"),
     path("api/cor/", views.AllColors.as_view(), name="colors_api"),
     path("api/docs", schema_view.with_ui("swagger", cache_timeout=0)),

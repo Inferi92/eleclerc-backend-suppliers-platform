@@ -1,6 +1,7 @@
-from django.forms import ValidationError
+from django.forms import JSONField, ValidationError
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
+from rest_framework.schemas import SchemaGenerator
 from .models import Color, Supplier, Brand, Product
 from .serializers import (
     ColorSerializer,
@@ -8,7 +9,7 @@ from .serializers import (
     BrandSerializer,
     ProductSerializer,
 )
-
+from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -25,14 +26,14 @@ def response_201(serializer):
 
 
 def response_204(serializer):
-    return openapi.Response("Successful operation")
+    return openapi.Response("Successful operation", serializer)
 
 
-def response_404(serializer):
+def response_404():
     return openapi.Response("Not Found")
 
 
-def response_400(serializer):
+def response_400():
     return openapi.Response("Bad Request")
 
 
@@ -57,7 +58,7 @@ class AllSuppliers(APIView):
         request_body=SupplierSerializer,
         responses={
             status.HTTP_201_CREATED: response_201(SupplierSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(SupplierSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
         },
     )
     def post(self, request, format=None):
@@ -81,7 +82,7 @@ class SingleSupplier(APIView):
         operation_description="Obter um fornecedor específico",
         responses={
             status.HTTP_200_OK: response_200(SupplierSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(SupplierSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
@@ -95,8 +96,8 @@ class SingleSupplier(APIView):
         request_body=SupplierSerializer,
         responses={
             status.HTTP_200_OK: response_200(SupplierSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(SupplierSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(SupplierSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def put(self, request, nif, format=None):
@@ -112,7 +113,7 @@ class SingleSupplier(APIView):
         operation_description="Apagar um fornecedor específico",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(SupplierSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(SupplierSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def delete(self, request, nif, format=None):
@@ -141,7 +142,7 @@ class AllBrands(APIView):
         request_body=BrandSerializer,
         responses={
             status.HTTP_201_CREATED: response_201(BrandSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(BrandSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
         },
     )
     def post(self, request, format=None):
@@ -165,7 +166,7 @@ class SingleBrand(APIView):
         operation_description="Obter uma marca específica",
         responses={
             status.HTTP_200_OK: response_200(BrandSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, name, format=None):
@@ -179,8 +180,8 @@ class SingleBrand(APIView):
         request_body=BrandSerializer,
         responses={
             status.HTTP_200_OK: response_200(BrandSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(BrandSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def put(self, request, name, format=None):
@@ -196,7 +197,7 @@ class SingleBrand(APIView):
         operation_description="Apagar um marca específico",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(BrandSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def delete(self, request, pk, format=None):
@@ -220,7 +221,7 @@ class BrandBySupplier(APIView):
         operation_description="Obter marcas de um fornecedor específico",
         responses={
             status.HTTP_200_OK: response_200(BrandSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(BrandSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
@@ -247,7 +248,7 @@ class AllProducts(APIView):
         request_body=ProductSerializer,
         responses={
             status.HTTP_201_CREATED: response_201(ProductSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(ProductSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
         },
     )
     def post(self, request, format=None):
@@ -271,7 +272,7 @@ class SingleProduct(APIView):
         operation_description="Obter um produto específico",
         responses={
             status.HTTP_200_OK: response_200(ProductSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, pk, format=None):
@@ -285,8 +286,8 @@ class SingleProduct(APIView):
         request_body=ProductSerializer,
         responses={
             status.HTTP_200_OK: response_200(ProductSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(ProductSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ProductSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def put(self, request, pk, format=None):
@@ -302,7 +303,7 @@ class SingleProduct(APIView):
         operation_description="Apagar um produto específico",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(ProductSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def delete(self, request, pk, format=None):
@@ -315,7 +316,7 @@ class SingleProduct(APIView):
 
 # Product by Supplier
 class ProductBySupplier(APIView):
-    def get_object(self, nif):
+    def get_object(self:Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -326,7 +327,7 @@ class ProductBySupplier(APIView):
         operation_description="Obter produtos de um fornecedor específico",
         responses={
             status.HTTP_200_OK: response_200(ProductSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
@@ -334,6 +335,131 @@ class ProductBySupplier(APIView):
         serializer = ProductSerializer(products, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
+# Top 20 Products by Supplier
+class TopTwentyProducts(APIView):
+    def get_object(self:Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter TOP 20 produtos por fornecedor",
+        operation_description="Obter os últimos 20 produtos criados de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).order_by("created_date")[:20]
+        serializer = ProductSerializer(products, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+# Number of Discontinued Products by Supplier
+class NumberOfDiscontinuedProducts(APIView):
+    def get_object(self:Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter o número de produtos descontinuados por fornecedor",
+        operation_description="Obter o número produtos descontinuados de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(serializers.Serializer(ProductSerializer)),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).filter(discontinued=True).count()
+        return JsonResponse(products, safe=False)
+
+# Discontinued Products by Supplier
+class DiscontinuedProducts(APIView):
+    def get_object(self:Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter os produtos descontinuados por fornecedor",
+        operation_description="Obter todos os produtos descontinuados de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).filter(discontinued=True)
+        serializer = ProductSerializer(products, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+# Number of Blocked Products by Supplier
+class NumberOfBlockedProducts(APIView):
+    def get_object(self:Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter o número de produtos bloqueados por fornecedor",
+        operation_description="Obter o número produtos bloqueados de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).filter(bloqueado=True).count()
+        return JsonResponse(products, safe=False)
+
+# Blocked Products by Supplier
+class BlockedProducts(APIView):
+    def get_object(self:Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter os produtos bloqueados por fornecedor",
+        operation_description="Obter todos os produtos bloqueados de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).filter(bloqueado=True)
+        serializer = ProductSerializer(products, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+# Number of Brands by Supplier
+class NumberOfBrandsBySupplier(APIView):
+    def get_object(self:Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter o número de marcas por fornecedor",
+        operation_description="Obter o número de marcas de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(BrandSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Brand.objects.filter(supplier=nif).count()
+        return JsonResponse(products, safe=False)
 
 # All Colors
 class AllColors(APIView):
@@ -353,7 +479,7 @@ class AllColors(APIView):
         request_body=ColorSerializer,
         responses={
             status.HTTP_201_CREATED: response_201(ColorSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(ColorSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
         },
     )
     def post(self, request, format=None):
@@ -377,7 +503,7 @@ class SingleColor(APIView):
         operation_description="Obter uma cor específica",
         responses={
             status.HTTP_200_OK: response_200(ColorSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ColorSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, name, format=None):
@@ -391,8 +517,8 @@ class SingleColor(APIView):
         request_body=ColorSerializer,
         responses={
             status.HTTP_200_OK: response_200(ColorSerializer),
-            status.HTTP_400_BAD_REQUEST: response_400(ColorSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ColorSerializer),
+            status.HTTP_400_BAD_REQUEST: response_400(),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def put(self, request, name, format=None):
@@ -408,7 +534,7 @@ class SingleColor(APIView):
         operation_description="Apagar uma cor específica",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(ColorSerializer),
-            status.HTTP_404_NOT_FOUND: response_404(ColorSerializer),
+            status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def delete(self, request, name, format=None):

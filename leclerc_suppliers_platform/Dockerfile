@@ -8,4 +8,4 @@ RUN pip3 install -r requirements.txt
 CMD python manage.py migrate ; python manage.py runserver 0.0.0.0:8008
 
 # ADD THIS CODE TO CREATE NEW SUPERUSER IN DJANGO ADMIN
-#  echo "from django.contrib.auth.models import User; User.objects.create_superuser('USER', 'EMAIL', 'PASSWORD')" | python manage.py shell 
+# echo "from django.contrib.auth.models import User; User.objects.create_superuser('USER', 'EMAIL', 'PASSWORD')" | python manage.py shell 

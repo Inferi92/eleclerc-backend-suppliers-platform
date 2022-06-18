@@ -63,14 +63,17 @@ class Brand(models.Model):
 # TABELA DAS CORES
 class Color(models.Model):
     COLOR_PALLET = [
-        ("Branco","Branco"),
-        ("Preto","Preto"),
-        ("Vermelho","Vermelho"),
-        ("Azul","Azul"),
-        ("Verde","Verde"),
-        ("Amarelo","Amarelo"),
-        ("Cinzento","Cinzento"),
-        ("Rosa","Rosa",),
+        ("Branco", "Branco"),
+        ("Preto", "Preto"),
+        ("Vermelho", "Vermelho"),
+        ("Azul", "Azul"),
+        ("Verde", "Verde"),
+        ("Amarelo", "Amarelo"),
+        ("Cinzento", "Cinzento"),
+        (
+            "Rosa",
+            "Rosa",
+        ),
     ]
     name = models.CharField(
         choices=COLOR_PALLET,
@@ -100,7 +103,7 @@ class Product(models.Model):
     )
     name = models.CharField(max_length=100, null=False, blank=False)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=False, blank=False)
-    descricao = models.TextField(max_length=200, null=True, blank=True)
+    description = models.TextField(max_length=200, null=True, blank=True)
     recommended_age = models.IntegerField(
         null=True,
         blank=False,
@@ -123,7 +126,7 @@ class Product(models.Model):
     ingredients = models.TextField(max_length=300, null=True, blank=True)
     nutritional_table = models.TextField(max_length=300, null=True, blank=True)
     bloqueado = models.BooleanField(default=False, null=False, blank=False)
-    descontinuado = models.BooleanField(default=False, null=False, blank=False)
+    discontinued = models.BooleanField(default=False, null=False, blank=False)
     capacity = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, blank=False
     )
@@ -150,6 +153,7 @@ class Product(models.Model):
     seles_unit = models.CharField(
         max_length=3, choices=SALES_UN, null=False, blank=False
     )
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
