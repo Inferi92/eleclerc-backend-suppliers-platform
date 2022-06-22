@@ -15,8 +15,10 @@ from django.core.validators import (
 # TABELA DOS FORNECEDORES
 class Supplier(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
-    address = models.CharField(max_length=100, null=False, blank=False)
+    street = models.CharField(max_length=100, null=False, blank=False)
+    door_number = models.CharField(max_length=8, null=True, blank=False)
     postal_code = models.CharField(max_length=8, null=False, blank=False)
+    country = models.CharField(max_length=30, null=False, blank=False)
     city = models.CharField(max_length=50, null=False, blank=False)
     nif = models.BigIntegerField(
         primary_key=True,
