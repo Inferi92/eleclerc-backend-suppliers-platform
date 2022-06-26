@@ -1,7 +1,5 @@
-from django.forms import JSONField, ValidationError
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
-from rest_framework.schemas import SchemaGenerator
 from .models import Color, Supplier, Brand, Product
 from .serializers import (
     ColorSerializer,
@@ -220,7 +218,7 @@ class BrandBySupplier(APIView):
         operation_summary="Obter marcas por fornecedor",
         operation_description="Obter marcas de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(BrandSerializer),
+            status.HTTP_200_OK: response_200(BrandSerializer(many=True)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
@@ -261,27 +259,28 @@ class AllProducts(APIView):
 
 # Product by ID
 class SingleProduct(APIView):
-    def get_object(self, pk):
+    def get_object(self, ean):
         try:
-            return Product.objects.get(pk=pk)
+            return Product.objects.get(ean=ean)
         except Product.DoesNotExist:
             raise Http404
 
     @swagger_auto_schema(
-        operation_summary="Obter um produto pelo seu ID",
+        operation_summary="Obter um produto pelo seu Fornecedor e EAN",
         operation_description="Obter um produto específico",
         responses={
             status.HTTP_200_OK: response_200(ProductSerializer),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
-    def get(self, request, pk, format=None):
-        product = self.get_object(pk)
+    def get(self, request, ean, nif, format=None):
+        products = Product.objects.filter(supplier=nif)
+        product = products.get(ean=ean)
         serializer = ProductSerializer(product)
         return JsonResponse(serializer.data, safe=False)
 
     @swagger_auto_schema(
-        operation_summary="Atualizar um produto pelo seu ID",
+        operation_summary="Atualizar um produto pelo seu Fornecedor e EAN",
         operation_description="Atualizar um produto específico",
         request_body=ProductSerializer,
         responses={
@@ -290,8 +289,9 @@ class SingleProduct(APIView):
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
-    def put(self, request, pk, format=None):
-        product = self.get_object(pk)
+    def put(self, request, ean, nif, format=None):
+        products = Product.objects.filter(supplier=nif)
+        product = products.get(ean=ean)
         serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -306,8 +306,9 @@ class SingleProduct(APIView):
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
-    def delete(self, request, pk, format=None):
-        product = self.get_object(pk)
+    def delete(self, request, ean, nif, format=None):
+        products = Product.objects.filter(supplier=nif)
+        product = products.get(ean=ean)
         product.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,
@@ -316,7 +317,7 @@ class SingleProduct(APIView):
 
 # Product by Supplier
 class ProductBySupplier(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -326,7 +327,7 @@ class ProductBySupplier(APIView):
         operation_summary="Obter produtos por fornecedor",
         operation_description="Obter produtos de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_200_OK: response_200(ProductSerializer(many=True)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
@@ -338,7 +339,7 @@ class ProductBySupplier(APIView):
 
 # Top 20 Products by Supplier
 class TopTwentyProducts(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -348,7 +349,7 @@ class TopTwentyProducts(APIView):
         operation_summary="Obter TOP 20 produtos por fornecedor",
         operation_description="Obter os últimos 20 produtos criados de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_200_OK: response_200(ProductSerializer(many=True)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
@@ -358,9 +359,30 @@ class TopTwentyProducts(APIView):
         return JsonResponse(serializer.data, safe=False)
 
 
+# Number of Products by Supplier
+class NumberOfProducts(APIView):
+    def get_object(self: Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter o número de produtos por fornecedor",
+        operation_description="Obter o número produtos de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(openapi.Schema(type=openapi.TYPE_INTEGER)),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).count()
+        return JsonResponse(products, safe=False)
+
+
 # Number of Discontinued Products by Supplier
 class NumberOfDiscontinuedProducts(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -370,17 +392,20 @@ class NumberOfDiscontinuedProducts(APIView):
         operation_summary="Obter o número de produtos descontinuados por fornecedor",
         operation_description="Obter o número produtos descontinuados de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(serializers.Serializer(ProductSerializer)),
+            status.HTTP_200_OK: response_200(openapi.Schema(type=openapi.TYPE_INTEGER)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
-        products = Product.objects.filter(supplier=nif).filter(discontinued=True).count()
+        products = (
+            Product.objects.filter(supplier=nif).filter(discontinued=True).count()
+        )
         return JsonResponse(products, safe=False)
+
 
 # Discontinued Products by Supplier
 class DiscontinuedProducts(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -390,7 +415,7 @@ class DiscontinuedProducts(APIView):
         operation_summary="Obter os produtos descontinuados por fornecedor",
         operation_description="Obter todos os produtos descontinuados de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_200_OK: response_200(ProductSerializer(many=True)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
@@ -399,9 +424,10 @@ class DiscontinuedProducts(APIView):
         serializer = ProductSerializer(products, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
 # Number of Blocked Products by Supplier
 class NumberOfBlockedProducts(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -411,17 +437,18 @@ class NumberOfBlockedProducts(APIView):
         operation_summary="Obter o número de produtos bloqueados por fornecedor",
         operation_description="Obter o número produtos bloqueados de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_200_OK: response_200(openapi.Schema(type=openapi.TYPE_INTEGER)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
-        products = Product.objects.filter(supplier=nif).filter(bloqueado=True).count()
+        products = Product.objects.filter(supplier=nif).filter(active=False).count()
         return JsonResponse(products, safe=False)
+
 
 # Blocked Products by Supplier
 class BlockedProducts(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -431,19 +458,62 @@ class BlockedProducts(APIView):
         operation_summary="Obter os produtos bloqueados por fornecedor",
         operation_description="Obter todos os produtos bloqueados de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(ProductSerializer),
+            status.HTTP_200_OK: response_200(ProductSerializer(many=True)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
-        products = Product.objects.filter(supplier=nif).filter(bloqueado=True)
+        products = Product.objects.filter(supplier=nif).filter(active=False)
+        serializer = ProductSerializer(products, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+# Number of Active Products by Supplier
+class NumberOfActiveProducts(APIView):
+    def get_object(self: Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter o número de produtos ativos por fornecedor",
+        operation_description="Obter o número produtos ativos de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(openapi.Schema(type=openapi.TYPE_INTEGER)),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).filter(active=True).count()
+        return JsonResponse(products, safe=False)
+
+
+# Active Products by Supplier
+class ActiveProducts(APIView):
+    def get_object(self: Supplier, nif):
+        try:
+            return Supplier.objects.get(nif=nif)
+        except Supplier.DoesNotExist:
+            raise Http404
+
+    @swagger_auto_schema(
+        operation_summary="Obter os produtos ativos por fornecedor",
+        operation_description="Obter todos os produtos ativos de um fornecedor específico",
+        responses={
+            status.HTTP_200_OK: response_200(ProductSerializer(many=True)),
+            status.HTTP_404_NOT_FOUND: response_404(),
+        },
+    )
+    def get(self, request, nif, format=None):
+        products = Product.objects.filter(supplier=nif).filter(active=True)
         serializer = ProductSerializer(products, many=True)
         return JsonResponse(serializer.data, safe=False)
 
 
 # Number of Brands by Supplier
 class NumberOfBrandsBySupplier(APIView):
-    def get_object(self:Supplier, nif):
+    def get_object(self: Supplier, nif):
         try:
             return Supplier.objects.get(nif=nif)
         except Supplier.DoesNotExist:
@@ -453,13 +523,14 @@ class NumberOfBrandsBySupplier(APIView):
         operation_summary="Obter o número de marcas por fornecedor",
         operation_description="Obter o número de marcas de um fornecedor específico",
         responses={
-            status.HTTP_200_OK: response_200(BrandSerializer),
+            status.HTTP_200_OK: response_200(openapi.Schema(type=openapi.TYPE_INTEGER)),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
     def get(self, request, nif, format=None):
         products = Brand.objects.filter(supplier=nif).count()
         return JsonResponse(products, safe=False)
+
 
 # All Colors
 class AllColors(APIView):

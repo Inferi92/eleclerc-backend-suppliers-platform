@@ -98,6 +98,7 @@ class Product(models.Model):
         blank=False,
         unique=True,
         default=1,
+        primary_key=True,
         validators=[
             MaxValueValidator(9999999999999),
             MinValueValidator(1),
@@ -127,7 +128,7 @@ class Product(models.Model):
     nutriscore = models.CharField(max_length=1, null=True, blank=True)
     ingredients = models.TextField(max_length=300, null=True, blank=True)
     nutritional_table = models.TextField(max_length=300, null=True, blank=True)
-    bloqueado = models.BooleanField(default=False, null=False, blank=False)
+    active = models.BooleanField(default=True, null=False, blank=False)
     discontinued = models.BooleanField(default=False, null=False, blank=False)
     capacity = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, blank=False
@@ -152,7 +153,7 @@ class Product(models.Model):
         ("un", "unidade"),
         ("kg", "kilograma"),
     ]
-    seles_unit = models.CharField(
+    sales_unit = models.CharField(
         max_length=3, choices=SALES_UN, null=False, blank=False
     )
     created_date = models.DateTimeField(auto_now_add=True)

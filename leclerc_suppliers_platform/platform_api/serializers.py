@@ -1,9 +1,10 @@
 from dataclasses import field
 from pyexpat import model
 from weakref import ReferenceType
+
+from django.forms import IntegerField
 from .models import Supplier, Brand, Color, Product
 from rest_framework import serializers
-
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
