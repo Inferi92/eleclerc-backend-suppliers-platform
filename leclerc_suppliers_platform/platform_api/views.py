@@ -151,7 +151,7 @@ class AllBrands(APIView):
         return Response(brand.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Brand by ID
+# Brand by Supplier and Name
 class SingleBrand(APIView):
     def get_object(self, name):
         try:
@@ -160,20 +160,21 @@ class SingleBrand(APIView):
             raise Http404
 
     @swagger_auto_schema(
-        operation_summary="Obter marca pelo seu Nome",
+        operation_summary="Obter uma marca pelo seu Fornecedor e Nome",
         operation_description="Obter uma marca específica",
         responses={
             status.HTTP_200_OK: response_200(BrandSerializer),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
-    def get(self, request, name, format=None):
-        brand = self.get_object(name)
+    def get(self, request, name, nif, format=None):
+        brands = Brand.objects.filter(supplier=nif)
+        brand = brands.get(name=name)
         serializer = BrandSerializer(brand)
         return JsonResponse(serializer.data, safe=False)
 
     @swagger_auto_schema(
-        operation_summary="Atualizar um marca pelo seu Nome",
+        operation_summary="Atualizar um marca pelo seu Fornecedor e Nome",
         operation_description="Atualizar um marca específica",
         request_body=BrandSerializer,
         responses={
@@ -182,8 +183,9 @@ class SingleBrand(APIView):
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
-    def put(self, request, name, format=None):
-        brand = self.get_object(name)
+    def put(self, request, name, nif, format=None):
+        brands = Brand.objects.filter(supplier=nif)
+        brand = brands.get(name=name)
         serializer = BrandSerializer(brand, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -191,15 +193,16 @@ class SingleBrand(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-        operation_summary="Apagar um marca pelo seu Nome",
+        operation_summary="Apagar um marca pelo seu Fornecedor e Nome",
         operation_description="Apagar um marca específico",
         responses={
             status.HTTP_204_NO_CONTENT: response_204(BrandSerializer),
             status.HTTP_404_NOT_FOUND: response_404(),
         },
     )
-    def delete(self, request, pk, format=None):
-        brand = self.get_object(pk)
+    def delete(self, request, name, nif, format=None):
+        brands = Brand.objects.filter(supplier=nif)
+        brand = brands.get(name=name)
         brand.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT,
@@ -257,7 +260,7 @@ class AllProducts(APIView):
         return Response(product.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Product by ID
+# Product by Supplier and EAN
 class SingleProduct(APIView):
     def get_object(self, ean):
         try:

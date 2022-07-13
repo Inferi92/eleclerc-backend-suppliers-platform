@@ -1,6 +1,8 @@
 from configparser import MAX_INTERPOLATION_DEPTH
+from distutils.command.upload import upload
 from enum import unique
 from multiprocessing.sharedctypes import Value
+import os
 from random import choices
 from colorfield.fields import ColorField
 from django.db import models
@@ -11,6 +13,20 @@ from django.core.validators import (
 )
 
 # Create your models here.
+# lets us explicitly set upload path and filename
+def upload_supplier_image_to(instance, filename):
+    path = "images/suppliers/"
+    ext = filename.split(".")[-1]
+    filename = "%s.%s" % (instance.nif, ext)
+    return os.path.join(path, filename)
+
+
+def upload_product_image_to(instance, filename):
+    path = "images/products/"
+    ext = filename.split(".")[-1]
+    filename = "%s.%s" % (instance.ean, ext)
+    return os.path.join(path, filename)
+
 
 # TABELA DOS FORNECEDORES
 class Supplier(models.Model):
@@ -32,6 +48,9 @@ class Supplier(models.Model):
     register_date = models.DateTimeField(auto_now_add=True)
     last_login_date = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True, null=False, blank=False)
+    image_url = models.ImageField(
+        upload_to=upload_supplier_image_to, null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -39,13 +58,6 @@ class Supplier(models.Model):
     def save(self, *args, **kwargs):
         self.password = make_password(self.password)
         super(Supplier, self).save(*args, **kwargs)
-
-    # def save(self, *args, **kwargs):
-    # # On save, update timestamps
-    #     if not self.id:
-    #         self.data_registo = timezone.now()
-    #     self.data_ultimo_login = timezone.now()
-    #     return super(Fornecedor, self).save(*args, **kwargs)
 
 
 # TABELA DAS MARCAS
@@ -72,10 +84,7 @@ class Color(models.Model):
         ("Verde", "Verde"),
         ("Amarelo", "Amarelo"),
         ("Cinzento", "Cinzento"),
-        (
-            "Rosa",
-            "Rosa",
-        ),
+        ("Rosa", "Rosa"),
     ]
     name = models.CharField(
         choices=COLOR_PALLET,
@@ -157,6 +166,9 @@ class Product(models.Model):
         max_length=3, choices=SALES_UN, null=False, blank=False
     )
     created_date = models.DateTimeField(auto_now_add=True)
+    image_url = models.ImageField(
+        upload_to=upload_product_image_to, null=True, blank=True
+    )
 
     def __str__(self):
         return self.name

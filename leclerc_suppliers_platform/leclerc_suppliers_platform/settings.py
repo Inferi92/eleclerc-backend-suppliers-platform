@@ -73,6 +73,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.media",
             ],
         },
     },
@@ -90,7 +91,7 @@ DATABASES = {
         "NAME": "leclerc_suppliers_platform",
         "USER": "postgres",
         "PASSWORD": "Toe18Perir",
-        "HOST": "db",  # CHANGE FOR DB BEFORE RUN DOCKER COMMANDS AND 127.0.0.1 TO RUN IN YOUR COMPUTER
+        "HOST": "127.0.0.1",  # CHANGE FOR DB BEFORE RUN DOCKER COMMANDS AND 127.0.0.1 TO RUN IN YOUR COMPUTER
         "PORT": "5432",
     }
 }
@@ -139,11 +140,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = "/static/"
 
-# MEDIA URL
-MEDIA_URL = "/"
+# Actual directory user files go to
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# MEDIA ROOT
-MEDIA_ROOT = "platform_api/static/images"
+# URL used to access the media
+MEDIA_URL = "/media/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
