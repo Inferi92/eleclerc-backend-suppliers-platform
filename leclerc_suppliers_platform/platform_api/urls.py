@@ -95,4 +95,4 @@ urlpatterns = [
     path("api/cor/<str:name>", views.SingleColor.as_view(), name="single_color_api"),
     path("api/cor/", views.AllColors.as_view(), name="colors_api"),
     path("api/docs", schema_view.with_ui("swagger", cache_timeout=0)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

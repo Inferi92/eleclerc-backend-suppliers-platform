@@ -13,7 +13,11 @@ from django.core.validators import (
 )
 
 # Create your models here.
-# lets us explicitly set upload path and filename
+
+# Permite definir a pasta de destino e o nome do ficheiro
+# é definia a pasta de destino na variável path
+# é extraída a extensão na varíavel ext
+# é criado o nome do ficheiro na variável filename
 def upload_supplier_image_to(instance, filename):
     path = "images/suppliers/"
     ext = filename.split(".")[-1]
@@ -65,7 +69,7 @@ class Brand(models.Model):
     name = models.CharField(max_length=55, null=False, blank=False, primary_key=True)
     supplier = models.ForeignKey(
         Supplier,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=False,
         blank=False,
     )
@@ -100,7 +104,7 @@ class Color(models.Model):
 # TABELA DOS PRODUTOS
 class Product(models.Model):
     supplier = models.ForeignKey(
-        Supplier, on_delete=models.CASCADE, null=False, blank=False
+        Supplier, on_delete=models.PROTECT, null=False, blank=False
     )
     ean = models.BigIntegerField(
         null=False,
@@ -114,7 +118,7 @@ class Product(models.Model):
         ],
     )
     name = models.CharField(max_length=100, null=False, blank=False)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=False, blank=False)
+    brand = models.ForeignKey(Brand, on_delete=models.PROTECT, null=False, blank=False)
     description = models.TextField(max_length=200, null=True, blank=True)
     recommended_age = models.IntegerField(
         null=True,
@@ -125,7 +129,7 @@ class Product(models.Model):
             MaxValueValidator(199),
         ],
     )
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True)
+    color = models.ForeignKey(Color, on_delete=models.PROTECT, null=True, blank=True)
     gross_weight = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, blank=True
     )

@@ -140,11 +140,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = "/static/"
 
+MEDIA_DIR = Path(__file__).resolve().parent
+
 # Actual directory user files go to
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(MEDIA_DIR, "media")
 
 # URL used to access the media
-MEDIA_URL = "/media/"
+MEDIA_URL = "/eleclercapi/media/"
 
 
 # Default primary key field type
