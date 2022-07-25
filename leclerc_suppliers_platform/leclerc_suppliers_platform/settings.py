@@ -90,7 +90,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "leclerc_suppliers_platform",
         "USER": "postgres",
-        "PASSWORD": "Toe18Perir",
+        "PASSWORD": "@Cooplec2022",
         "HOST": "db",  # CHANGE FOR DB BEFORE RUN DOCKER COMMANDS AND 127.0.0.1 TO RUN IN YOUR COMPUTER
         "PORT": "5432",
     }

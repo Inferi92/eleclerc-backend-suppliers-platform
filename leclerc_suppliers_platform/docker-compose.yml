@@ -6,7 +6,7 @@ services:
     ports:
       - 5431:5432
     environment:
-      - POSTGRES_PASSWORD=Toe18Perir
+      - POSTGRES_PASSWORD=@Cooplec2022
       - POSTGRES_DB=leclerc_suppliers_platform
   api:
     container_name: eleclerc-suppliers-platform

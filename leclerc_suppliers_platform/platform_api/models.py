@@ -15,9 +15,9 @@ from django.core.validators import (
 # Create your models here.
 
 # Permite definir a pasta de destino e o nome do ficheiro
-# é definia a pasta de destino na variável path
-# é extraída a extensão na varíavel ext
-# é criado o nome do ficheiro na variável filename
+# é guardada a localização da pasta de destino na variável path
+# é guardada a extensão na varíavel ext
+# é guardado o nome do ficheiro na variável filename
 def upload_supplier_image_to(instance, filename):
     path = "images/suppliers/"
     ext = filename.split(".")[-1]

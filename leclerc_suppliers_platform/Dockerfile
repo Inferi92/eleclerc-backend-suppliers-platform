@@ -4,9 +4,8 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 COPY . .
 RUN pip3 install -r requirements.txt
-# RUN python manage.py migrate
 CMD python manage.py makemigrations ; python manage.py migrate ; python manage.py runserver 0.0.0.0:8008; 
 
 # ADD THIS CODE TO CREATE NEW SUPERUSER IN DJANGO ADMIN
-# echo "from django.contrib.auth.models import User; User.objects.create_superuser('diogo', 'seomanager@cooplecnorte.pt', 'Toe18Perir')" | python manage.py shell 
+# RUN echo "from django.contrib.auth.models import User; User.objects.create_superuser('telmo', 'seomanager@cooplecnorte.pt', '@Cooplec2022')" | python manage.py shell 
 # 
